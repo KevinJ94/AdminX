@@ -21,7 +21,7 @@ public interface RoleService {
 
     public Set<String> listRoleNames(String userName);
 
-    public List<RoleEntity> findRolesByUid(int id);
+    public Set<RoleEntity> findRolesByUid(int id);
 
     RoleEntity findByName(String name);
 

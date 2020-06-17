@@ -65,10 +65,10 @@ public class PermissionServiceImpl implements PermissionService {
             return res;
         }
 
-        List<RoleEntity> roleEntityList = roleService.findRolesByUid(user.getId());
+        Set<RoleEntity> roleEntitySet = roleService.findRolesByUid(user.getId());
         List<RolePermissionEntity> rolePermissionEntityList = new ArrayList<>();
 
-        for (RoleEntity roleEntity : roleEntityList){
+        for (RoleEntity roleEntity : roleEntitySet){
             rolePermissionEntityList.addAll(rolePermissionDAO.findRolePermissionEntitiesByRid(roleEntity.getId()));
         }
 
@@ -88,10 +88,10 @@ public class PermissionServiceImpl implements PermissionService {
             return res;
         }
 
-        List<RoleEntity> roleEntityList = roleService.findRolesByUid(user.getId());
+        Set<RoleEntity> roleEntitySet = roleService.findRolesByUid(user.getId());
         List<RolePermissionEntity> rolePermissionEntityList = new ArrayList<>();
 
-        for (RoleEntity roleEntity : roleEntityList){
+        for (RoleEntity roleEntity : roleEntitySet){
             rolePermissionEntityList.addAll(rolePermissionDAO.findRolePermissionEntitiesByRid(roleEntity.getId()));
         }
 

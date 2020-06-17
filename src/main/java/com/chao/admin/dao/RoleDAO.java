@@ -9,6 +9,7 @@ public interface RoleDAO extends JpaRepository<RoleEntity,Integer> {
 
     public RoleEntity findByName(String name);
     public List<RoleEntity> findRoleEntitiesByName(String name);
+    public List<RoleEntity> findRoleEntitiesByPid(Integer pid);
     public void deleteById(int id);
 
 }

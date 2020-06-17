@@ -10,10 +10,7 @@ import com.chao.admin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -68,13 +65,25 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<RoleEntity> findRolesByUid(int id) {
-        List<RoleEntity> roleEntityList = new LinkedList<>();
+    public Set<RoleEntity> findRolesByUid(int id) {
+        Set<RoleEntity> roleEntityList = new HashSet<>();
         List<UserRoleEntity> userRoleEntityList = userRoleService.findUserRoleEntitiesByUid(id);
         for (UserRoleEntity ur : userRoleEntityList){
-            roleEntityList.add(findRoleById(ur.getRid()));
+            RoleEntity roleEntity = findRoleById(ur.getRid());
+            roleEntityList.add(roleEntity);
+            findChildrenRoles(roleEntity,roleEntityList);
         }
         return roleEntityList;
+    }
+
+    private void findChildrenRoles(RoleEntity roleEntity,Set<RoleEntity> roleEntitySet){
+        List<RoleEntity> roleEntities = roleDAO.findRoleEntitiesByPid(roleEntity.getId());
+        if(roleEntities.size() != 0){
+            roleEntitySet.addAll(roleEntities);
+            for (RoleEntity role : roleEntities){
+                findChildrenRoles(role,roleEntitySet);
+            }
+        }
     }
 
     @Override
