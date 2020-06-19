@@ -2,10 +2,13 @@ package com.chao.admin.service.serviceImpl;
 
 import com.chao.admin.dao.UserDAO;
 import com.chao.admin.entity.UserEntity;
+import com.chao.admin.entity.UserRoleEntity;
+import com.chao.admin.service.UserRoleService;
 import com.chao.admin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -13,19 +16,28 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDAO userDAO;
+    @Autowired
+    private UserRoleService userRoleService;
 
     @Override
     public UserEntity findByName(String name) {
         return userDAO.findByName(name);
     }
 
+    @Transactional
     @Override
     public void addUser(UserEntity user) {
-        userDAO.save(user);
+
+        UserEntity u = userDAO.saveAndFlush(user);
+        UserRoleEntity userRoleEntity = new UserRoleEntity();
+        userRoleEntity.setRid(3);
+        userRoleEntity.setUid(u.getId());
+        userRoleService.addUserRole(userRoleEntity);
     }
 
     @Override
     public void updateUser(UserEntity user) {
+
         userDAO.save(user);
     }
 

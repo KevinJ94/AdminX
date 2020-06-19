@@ -98,6 +98,9 @@ public class PermissionServiceImpl implements PermissionService {
         for (RolePermissionEntity rp : rolePermissionEntityList){
             res.add(findPermissionById(rp.getPid()).getUrl());
         }
+        for (String s : res){
+            System.out.println(s);
+        }
 
         return res;
     }

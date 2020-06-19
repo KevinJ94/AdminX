@@ -1,6 +1,9 @@
 package com.chao.admin.exception;
 
+import com.chao.admin.utils.ResultBean;
+import com.chao.admin.utils.ResultBeanFactory;
 import org.apache.shiro.authz.UnauthorizedException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -8,14 +11,28 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 @ControllerAdvice
 public class DefaultExceptionHandler {
+	@Autowired(required = false)
+	public HttpServletResponse response;
+
+	@Autowired
+	public HttpServletRequest request;
+
 	@ExceptionHandler({ UnauthorizedException.class })
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
-	public ModelAndView processUnauthenticatedException(NativeWebRequest request, UnauthorizedException e) {
-		ModelAndView mv = new ModelAndView();
-		mv.addObject("ex", e);
-		mv.setViewName("error");
-		return mv;
+	public ResultBean processUnauthenticatedException(NativeWebRequest request, UnauthorizedException e) {
+		return ResultBeanFactory.getResultBean(response.getStatus(),"UNAUTHORIZED",null,false);
 	}
+
+	@ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public String illegalArgumentHandler(IllegalArgumentException e){
+        return e.toString();
+    }
+
+
 }

@@ -1,10 +1,13 @@
 package com.chao.admin.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "role", schema = "adminx", catalog = "")
+@JsonIgnoreProperties({ "handler","hibernateLazyInitializer" })
 public class RoleEntity {
     private int id;
     private String name;
