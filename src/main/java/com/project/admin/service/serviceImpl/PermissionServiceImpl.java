@@ -7,12 +7,13 @@ import com.project.admin.entity.RoleEntity;
 import com.project.admin.entity.RolePermissionEntity;
 import com.project.admin.entity.UserEntity;
 import com.project.admin.service.PermissionService;
+import com.project.admin.service.RolePermissionService;
 import com.project.admin.service.RoleService;
 import com.project.admin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,7 +30,7 @@ public class PermissionServiceImpl implements PermissionService {
     UserService userService;
 
     @Autowired
-    RolePermissionDAO rolePermissionDAO;
+    RolePermissionService rolePermissionService;
 
     @Override
     public void addPermission(PermissionEntity permissionEntity) {
@@ -59,19 +60,8 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public Set<String> listPermissions(String userName) {
         HashSet<String> res = new HashSet<>();
-        UserEntity user = userService.findByName(userName);
 
-        if (user== null){
-            return res;
-        }
-
-        Set<RoleEntity> roleEntitySet = roleService.findRolesByUid(user.getId());
-        List<RolePermissionEntity> rolePermissionEntityList = new ArrayList<>();
-
-        for (RoleEntity roleEntity : roleEntitySet){
-            rolePermissionEntityList.addAll(rolePermissionDAO.findRolePermissionEntitiesByRid(roleEntity.getId()));
-        }
-
+        List<RolePermissionEntity> rolePermissionEntityList = rolePermissionService.findRoleEntitiesByUsername(userName);
         for (RolePermissionEntity rp : rolePermissionEntityList){
             res.add(findPermissionById(rp.getPid()).getName());
         }
@@ -82,21 +72,30 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public Set<String> listPermissionURLs(String userName) {
         HashSet<String> res = new HashSet<>();
-        UserEntity user = userService.findByName(userName);
 
-        if (user== null){
-            return res;
-        }
-
-        Set<RoleEntity> roleEntitySet = roleService.findRolesByUid(user.getId());
-        List<RolePermissionEntity> rolePermissionEntityList = new ArrayList<>();
-
-        for (RoleEntity roleEntity : roleEntitySet){
-            rolePermissionEntityList.addAll(rolePermissionDAO.findRolePermissionEntitiesByRid(roleEntity.getId()));
-        }
-
+        List<RolePermissionEntity> rolePermissionEntityList = rolePermissionService.findRoleEntitiesByUsername(userName);
         for (RolePermissionEntity rp : rolePermissionEntityList){
             res.add(findPermissionById(rp.getPid()).getUrl());
+        }
+        for (String s : res){
+            System.out.println(s);
+        }
+
+        return res;
+    }
+
+    @Override
+    public Set<String> listPermissionMethods(String userName,String URL) {
+        HashSet<String> res = new HashSet<>();
+
+        List<RolePermissionEntity> rolePermissionEntityList = rolePermissionService.findRoleEntitiesByUsername(userName);
+
+        for (RolePermissionEntity rp : rolePermissionEntityList){
+            PermissionEntity p = findPermissionById(rp.getPid());
+            if (URL.equals(p.getUrl())){
+                res.add(p.getMethod());
+            }
+
         }
         for (String s : res){
             System.out.println(s);
@@ -111,6 +110,7 @@ public class PermissionServiceImpl implements PermissionService {
         return permissionDAO.findByName(name);
     }
 
+    @Deprecated
     @Override
     public boolean needInterceptor(String requestURI) {
 
@@ -121,4 +121,5 @@ public class PermissionServiceImpl implements PermissionService {
         }
         return false;
     }
+
 }

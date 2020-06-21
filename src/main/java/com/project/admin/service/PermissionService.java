@@ -20,7 +20,10 @@ public interface PermissionService {
 
     public Set<String> listPermissionURLs(String userName);
 
+    public Set<String> listPermissionMethods(String userName,String URL);
+
     PermissionEntity findByName(String name);
 
+    @Deprecated
     public boolean needInterceptor(String requestURI);
 }

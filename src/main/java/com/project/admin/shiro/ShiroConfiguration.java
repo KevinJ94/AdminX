@@ -123,7 +123,6 @@ public class ShiroConfiguration {
     @Bean("securityManager")
     public DefaultWebSecurityManager getManager(JWTRealm realm) {
         DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
-        //realm.setCredentialsMatcher(hashedCredentialsMatcher());
         // 使用自己的realm
         manager.setRealm(realm);
 
@@ -142,16 +141,14 @@ public class ShiroConfiguration {
 
     @Bean("shiroFilter")
     public ShiroFilterFactoryBean factory(DefaultWebSecurityManager securityManager) {
-        System.out.println("fuck jwt");
+        //System.out.println("fuck jwt");
         ShiroFilterFactoryBean factoryBean = new ShiroFilterFactoryBean();
 
         // 添加自己的过滤器并且取名为jwt
         Map<String, Filter> filterMap = new HashMap<>();
         filterMap.put("jwt", new JWTFilter());
         factoryBean.setFilters(filterMap);
-
         factoryBean.setSecurityManager(securityManager);
-        factoryBean.setUnauthorizedUrl("/401");
 
         /*
          * 自定义url规则
@@ -161,21 +158,14 @@ public class ShiroConfiguration {
         // 所有请求通过我们自己的JWT Filter
         filterRuleMap.put("/**", "jwt");
         // 访问401和404页面不通过我们的Filter
-        filterRuleMap.put("/401", "anon");
-        filterRuleMap.put("/jwt","anon");
+        filterRuleMap.put("/login","anon");
+        filterRuleMap.put("/swagger-ui.html", "anon");
+        filterRuleMap.put("/swagger-resources/**", "anon");
+        filterRuleMap.put("/v2/api-docs/**", "anon");
+        filterRuleMap.put("/webjars/springfox-swagger-ui/**", "anon");
         factoryBean.setFilterChainDefinitionMap(filterRuleMap);
         return factoryBean;
     }
-
-//    @Bean
-//    public HashedCredentialsMatcher hashedCredentialsMatcher(){
-//        HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
-//
-//        hashedCredentialsMatcher.setHashAlgorithmName("md5");//散列算法:这里使用MD5算法;
-//        hashedCredentialsMatcher.setHashIterations(2);//散列的次数，比如散列两次，相当于 md5(md5(""));
-//
-//        return hashedCredentialsMatcher;
-//    }
 
     /**
      * 下面的代码是添加注解支持

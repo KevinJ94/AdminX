@@ -13,6 +13,7 @@ public class PermissionEntity {
     private String name;
     private String desc;
     private String url;
+    private String method;
 
     @Id
     @Column(name = "id")
@@ -68,5 +69,15 @@ public class PermissionEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, desc, url);
+    }
+
+    @Basic
+    @Column(name = "method")
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
     }
 }

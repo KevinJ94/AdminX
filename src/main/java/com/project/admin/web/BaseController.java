@@ -19,6 +19,4 @@ public class BaseController {
     public HttpServletRequest request;
 
 
-
-
 }

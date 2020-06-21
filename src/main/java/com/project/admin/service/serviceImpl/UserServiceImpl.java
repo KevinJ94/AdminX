@@ -33,6 +33,7 @@ public class UserServiceImpl implements UserService {
         userRoleEntity.setRid(3);
         userRoleEntity.setUid(u.getId());
         userRoleService.addUserRole(userRoleEntity);
+
     }
 
     @Override

@@ -6,7 +6,9 @@ import com.project.admin.shiro.JWTToken;
 import com.project.admin.shiro.JWTUtil;
 import com.project.admin.utils.ResultBeanFactory;
 import com.project.admin.utils.SpringContextUtils;
+import com.sun.xml.internal.fastinfoset.util.CharArray;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -95,22 +97,11 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             try {
                 executeLogin(request, response);
             } catch (Exception e) {
-                HttpServletResponse resp = (HttpServletResponse) response;
-                resp.setContentType("application/json; charset=utf-8");
-                PrintWriter out = resp.getWriter();
-                out.println(JSON.toJSONString(ResultBeanFactory.getResultBean(401, "UNAUTHORIZED", null, false))); // 返回自己的json
-                out.flush();
-                out.close();
+                error(response);
                 return false;
             }
-        }
-        else {
-            HttpServletResponse resp = (HttpServletResponse) response;
-            resp.setContentType("application/json; charset=utf-8");
-            PrintWriter out = resp.getWriter();
-            out.println(JSON.toJSONString(ResultBeanFactory.getResultBean(401, "UNAUTHORIZED", null, false))); // 返回自己的json
-            out.flush();
-            out.close();
+        } else {
+            error(response);
             return false;
         }
         if (null == permissionService)
@@ -118,44 +109,82 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
 
         String requestURI = getPathWithinApplication(request);
 
-        //HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-
         System.out.println("requestURI:" + requestURI + " Method:" + httpServletRequest.getMethod());
+
+
         if (username != null) {
-            boolean needInterceptor = permissionService.needInterceptor(requestURI);
-            if (!needInterceptor) {
-                return true;
-            } else {
+//            boolean needInterceptor = permissionService.needInterceptor(requestURI);
+//            if (!needInterceptor) {
+//                return true;
+//            } else {
 
-                boolean hasPermission = false;
+            boolean hasPermission = false;
 
-                Set<String> permissionUrls = permissionService.listPermissionURLs(username);
-                for (String url : permissionUrls) {
-                    // 这就表示当前用户有这个权限
-                    if (url.equals(requestURI)) {
-                        hasPermission = true;
-                        break;
+            Set<String> permissionUrls = permissionService.listPermissionURLs(username);
+            Set<String> permissionMethods = permissionService.listPermissionMethods(username, getURL(requestURI));
+
+            for (String url : permissionUrls) {
+                // 这就表示当前用户有这个权限
+
+                if (matchURL(url, requestURI)) {
+
+                    for (String method : permissionMethods) {
+                        if (((HttpServletRequest) request).getMethod().equals(method)) {
+                            hasPermission = true;
+                            break;
+                        }
                     }
                 }
-
-                if (hasPermission)
-                    return super.preHandle(request, response);
-                else {
-                    HttpServletResponse resp = (HttpServletResponse) response;
-                    resp.setContentType("application/json; charset=utf-8");
-                    PrintWriter out = resp.getWriter();
-                    out.println(JSON.toJSONString(ResultBeanFactory.getResultBean(401, "UNAUTHORIZED", null, false))); // 返回自己的json
-                    out.flush();
-                    out.close();
-                    return false;
-                }
-
             }
+
+            if (hasPermission)
+                return super.preHandle(request, response);
+            else {
+                error(response);
+                return false;
+            }
+
+            //}
         }
 
         return super.preHandle(request, response);
 
-
     }
 
+    private String getURL(String URI){
+        char[] charArray = URI.toCharArray();
+        int index = -1;
+
+        for (int i = charArray.length - 1; i >= 0; i--) {
+            if (charArray[i] == '/') {
+                if (i == 0) {
+                    return "/";
+                } else {
+                    index = i;
+                    break;
+                }
+
+            }
+        }
+        return URI.substring(0, index);
+    }
+
+    private boolean matchURL(String URL, String URI) {
+
+        if (URL.equals(URI)) {
+            return true;
+        }
+
+        return URL.equals(getURL(URI));
+    }
+
+
+    private void error(ServletResponse response) throws IOException {
+        HttpServletResponse resp = (HttpServletResponse) response;
+        resp.setContentType("application/json; charset=utf-8");
+        PrintWriter out = resp.getWriter();
+        out.println(JSON.toJSONString(ResultBeanFactory.getResultBean(401, "UNAUTHORIZED", null, false)));
+        out.flush();
+        out.close();
+    }
 }

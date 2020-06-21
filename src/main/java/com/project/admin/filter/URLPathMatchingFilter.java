@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.util.Set;
 
+@Deprecated
 public class URLPathMatchingFilter extends PathMatchingFilter {
     @Autowired
     PermissionService permissionService;

@@ -22,6 +22,8 @@ public interface RolePermissionService {
 
     public List<RolePermissionEntity> findRoleEntitiesByPid(Integer pid);
 
+    public List<RolePermissionEntity> findRoleEntitiesByUsername(String userName);
+
     public void deleteById(int id);
 
 }

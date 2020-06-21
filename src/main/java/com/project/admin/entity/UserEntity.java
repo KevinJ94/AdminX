@@ -13,6 +13,7 @@ public class UserEntity {
     private String name;
     private String password;
     private String salt;
+    private Integer enable;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,5 +70,15 @@ public class UserEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, password, salt);
+    }
+
+    @Basic
+    @Column(name = "enable")
+    public Integer getEnable() {
+        return enable;
+    }
+
+    public void setEnable(Integer enable) {
+        this.enable = enable;
     }
 }

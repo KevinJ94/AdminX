@@ -1,43 +1,26 @@
 package com.project.admin.web;
 
-import org.apache.shiro.SecurityUtils;
+import com.project.admin.shiro.JWTUtil;
+import com.project.admin.utils.ResultBean;
 import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.session.Session;
-import org.apache.shiro.subject.Subject;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.apache.shiro.crypto.hash.SimpleHash;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class AuthController {
+public class AuthController extends BaseController {
 
-//    @RequestMapping(value = "/login",method = RequestMethod.GET)
-//    public String login(Model model) {
-//        return "login";
-//    }
+    @GetMapping("/login")
+    public ResultBean login() {
+        System.out.println("jwt login");
+        String encodedPassword = new SimpleHash("md5", "abcde", "jPz19y7arvYIGhuUjsb6sQ==", 2).toString();
 
-//    @RequestMapping(value = "/login",method = RequestMethod.POST)
-//    public String checkLogin(Model model, String name, String password) {
-//        Subject subject = SecurityUtils.getSubject();
-//        UsernamePasswordToken token = new UsernamePasswordToken(name, password);
-//        try {
-//            subject.login(token);
-//            Session session = subject.getSession();
-//            session.setAttribute("subject", subject);
-//            return "redirect:index";
-//
-//        } catch (AuthenticationException e) {
-//            model.addAttribute("error", "验证失败");
-//            return "login";
-//        }
-//    }
-//
-//    @RequestMapping(value = "/logout")
-//    public String logout(Model model) {
-//        return "index";
-//    }
+        try {
+            return new ResultBean(response.getStatus(), "Login success", JWTUtil.sign("li4", encodedPassword),true);
+
+        } catch (AuthenticationException e) {
+            return new ResultBean(response.getStatus(), "Login failed", e,false);
+        }
+    }
 
 }
