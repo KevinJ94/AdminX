@@ -1,6 +1,7 @@
 package com.project.admin.web;
 
 import com.project.admin.entity.UserEntity;
+import com.project.admin.utils.Algorithm;
 import com.project.admin.utils.ResultBean;
 import com.project.admin.utils.ResultBeanFactory;
 import io.swagger.annotations.ApiOperation;
@@ -16,7 +17,7 @@ public class UserController extends BaseController {
 
     @ApiOperation("获取用户列表")
     @RequestMapping(value = "/user",method = RequestMethod.GET)
-    public List<UserEntity> listUser(@RequestParam(value = "start", defaultValue = "0") int start, @RequestParam(value = "size", defaultValue = "5") int size) {
+    public List<UserEntity> listUser() {
 
         return userService.findAll();
     }
@@ -32,10 +33,8 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/user",method = RequestMethod.POST)
     public ResultBean addUser(@RequestBody UserEntity userEntity) {
         try {
-            String salt = new SecureRandomNumberGenerator().nextBytes().toString();
-            int times = 2;
-            String algorithmName = "md5";
-            String encodedPassword = new SimpleHash(algorithmName, userEntity.getPassword(), salt, times).toString();
+            String salt = Algorithm.generateSalt();
+            String encodedPassword = Algorithm.encodePassword(userEntity.getPassword(),salt);
             UserEntity u = new UserEntity();
             u.setName(userEntity.getName());
             u.setPassword(encodedPassword);

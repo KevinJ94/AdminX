@@ -1,10 +1,15 @@
 package com.project.admin;
 
+import com.project.admin.entity.MenuEntity;
+import com.project.admin.entity.TreeData;
+import com.project.admin.service.MenuService;
 import com.project.admin.service.PermissionService;
+import com.project.admin.utils.Algorithm;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
 import java.util.Set;
 
 @SpringBootTest
@@ -13,7 +18,8 @@ class ApplicationTests {
     @Autowired
     PermissionService permissionService;
 
-
+    @Autowired
+    MenuService menuService;
 
 
     @Test
@@ -22,25 +28,12 @@ class ApplicationTests {
 
     @Test
     void testUserCRUD() {
-//        UserEntity ue = new UserEntity();
-//        ue.setName("chaojiang");
-//        ue.setPassword("123456");
-//        ue.setSalt("abcde");
-//        userService.addUser(ue);
-//        System.out.println("added a new user");
-//        ue = userService.findByName("chaojiang");
-//        System.out.println("find by name tested");
-//        ue = userService.findUserById(ue.getId());
-//        System.out.println("find by id tested");
-//        ue.setName("jiang");
-//        userService.updateUser(ue)
-//        userService.findUserByName("jiang");
-        Set<String> names =  permissionService.listPermissions("zhang3");
-        for (String name : names){
-            System.out.println(name);
+
+        Set<MenuEntity> menuEntitySet = menuService.listMenus("zhang3");
+        List<TreeData> treeDataList = Algorithm.constructMenuTree(menuEntitySet);
+        for (TreeData node : treeDataList){
+            Algorithm.printTreeData(node,1);
         }
-
-
     }
 
 
