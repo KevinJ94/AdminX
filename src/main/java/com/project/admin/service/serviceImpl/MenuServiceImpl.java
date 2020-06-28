@@ -49,8 +49,13 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public List<MenuEntity> findAll() {
-        return menuDAO.findAll();
+    public Set<MenuEntity> findAll() {
+        Set<MenuEntity> menuEntitySet = new HashSet<>();
+        List<MenuEntity> menuEntityList = menuDAO.findAll();
+        for (MenuEntity menu : menuEntityList){
+            menuEntitySet.add(menu);
+        }
+        return menuEntitySet;
     }
 
     @Override

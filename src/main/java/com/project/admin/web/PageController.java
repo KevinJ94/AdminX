@@ -12,15 +12,5 @@ public class PageController extends BaseController {
         return "index";
     }
 
-    @RequestMapping(value = "/test",method = RequestMethod.GET)
-    public String test(Model model) {
-        return "test";
-    }
-
-    @RequestMapping(value = "/users",method = RequestMethod.GET)
-    public String userMng(Model model) throws Exception{
-
-        return "users";
-    }
 
 }

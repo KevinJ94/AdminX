@@ -13,7 +13,7 @@ public interface MenuService {
 
     public void deleteMenuById(int id);
 
-    public List<MenuEntity> findAll();
+    public Set<MenuEntity> findAll();
 
     public MenuEntity findMenuById(int id);
 

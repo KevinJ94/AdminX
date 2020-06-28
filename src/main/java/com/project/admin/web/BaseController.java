@@ -24,6 +24,9 @@ public class BaseController {
     @Autowired
     public RolePermissionService rolePermissionService;
 
+    @Autowired
+    public MenuService menuService;
+
     @Autowired(required = false)
     public HttpServletResponse response;
 
