@@ -6,13 +6,9 @@ import com.project.admin.shiro.JWTToken;
 import com.project.admin.shiro.JWTUtil;
 import com.project.admin.utils.ResultBeanFactory;
 import com.project.admin.utils.SpringContextUtils;
-import com.sun.xml.internal.fastinfoset.util.CharArray;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
-import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RequestMethod;
-
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +32,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      */
     @Override
     protected boolean isLoginAttempt(ServletRequest request, ServletResponse response) {
-        System.out.println("尝试登陆");
+        //System.out.println("尝试登陆");
         HttpServletRequest req = (HttpServletRequest) request;
         String authorization = req.getHeader("Authorization");
         return authorization != null;
@@ -47,7 +43,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      */
     @Override
     protected boolean executeLogin(ServletRequest request, ServletResponse response) throws Exception {
-        System.out.println("执行登陆");
+        //System.out.println("执行登陆");
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String authorization = httpServletRequest.getHeader("Authorization");
 
@@ -61,7 +57,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
-        System.out.println("访问检查");
+        //System.out.println("访问检查");
 
         return true;
 
@@ -73,18 +69,18 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      */
     @Override
     protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
-        System.out.println("预处理");
+
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
         if (isLoginAttempt(request, response)) {
             try {
                 executeLogin(request, response);
             } catch (Exception e) {
-                error(response);
+                error(response,"登陆失败",e);
                 return false;
             }
         } else {
-            error(response);
+            error(response,"需要token",null);
             return false;
         }
         if (null == permissionService)
@@ -92,7 +88,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
 
         String requestURI = getPathWithinApplication(request);
 
-        System.out.println("requestURI:" + requestURI + " Method:" + httpServletRequest.getMethod());
+        //System.out.println("requestURI:" + requestURI + " Method:" + httpServletRequest.getMethod());
 
 
         if (username != null) {
@@ -104,15 +100,18 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             boolean hasPermission = false;
 
             Set<String> permissionUrls = permissionService.listPermissionURLs(username);
-            Set<String> permissionMethods = permissionService.listPermissionMethods(username, getURL(requestURI));
+
+            Set<String> permissionMethods = permissionService.listPermissionMethods(username,getURL(requestURI));
 
             for (String url : permissionUrls) {
                 // 这就表示当前用户有这个权限
 
                 if (matchURL(url, requestURI)) {
-
+                    System.out.println("url 匹配成功");
                     for (String method : permissionMethods) {
+
                         if (((HttpServletRequest) request).getMethod().equals(method)) {
+                            System.out.println("Method 匹配成功");
                             hasPermission = true;
                             break;
                         }
@@ -123,7 +122,8 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             if (hasPermission)
                 return super.preHandle(request, response);
             else {
-                error(response);
+                error(response,"没有当前url权限",new UnauthorizedException());
+
                 return false;
             }
 
@@ -136,6 +136,17 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
 
     private String getURL(String URI){
         char[] charArray = URI.toCharArray();
+        int count = 0;
+        for (int i = 0 ; i< charArray.length;i++){
+            if (charArray[i] == '/'){
+                count++;
+            }
+        }
+        if (count == 1){
+            return URI;
+        }
+
+
         int index = -1;
 
         for (int i = charArray.length - 1; i >= 0; i--) {
@@ -162,11 +173,11 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     }
 
 
-    private void error(ServletResponse response) throws IOException {
+    private void error(ServletResponse response,String msg, Exception e) throws IOException {
         HttpServletResponse resp = (HttpServletResponse) response;
         resp.setContentType("application/json; charset=utf-8");
         PrintWriter out = resp.getWriter();
-        out.println(JSON.toJSONString(ResultBeanFactory.getResultBean(401, "UNAUTHORIZED", null, false)));
+        out.println(JSON.toJSONString(ResultBeanFactory.getResultBean(((HttpServletResponse) response).getStatus(), msg, e, false)));
         out.flush();
         out.close();
     }

@@ -1,10 +1,13 @@
 package com.project.admin.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "role_menu", schema = "adminx", catalog = "")
+@JsonIgnoreProperties({ "handler","hibernateLazyInitializer" })
 public class RoleMenuEntity {
     private int id;
     private Integer rid;

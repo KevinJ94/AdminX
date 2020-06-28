@@ -1,11 +1,8 @@
 package com.project.admin.service.serviceImpl;
 
 import com.project.admin.dao.PermissionDAO;
-import com.project.admin.dao.RolePermissionDAO;
 import com.project.admin.entity.PermissionEntity;
-import com.project.admin.entity.RoleEntity;
 import com.project.admin.entity.RolePermissionEntity;
-import com.project.admin.entity.UserEntity;
 import com.project.admin.service.PermissionService;
 import com.project.admin.service.RolePermissionService;
 import com.project.admin.service.RoleService;
@@ -62,7 +59,7 @@ public class PermissionServiceImpl implements PermissionService {
         HashSet<String> res = new HashSet<>();
 
         List<RolePermissionEntity> rolePermissionEntityList = rolePermissionService.findRoleEntitiesByUsername(userName);
-        for (RolePermissionEntity rp : rolePermissionEntityList){
+        for (RolePermissionEntity rp : rolePermissionEntityList) {
             res.add(findPermissionById(rp.getPid()).getName());
         }
 
@@ -74,32 +71,32 @@ public class PermissionServiceImpl implements PermissionService {
         HashSet<String> res = new HashSet<>();
 
         List<RolePermissionEntity> rolePermissionEntityList = rolePermissionService.findRoleEntitiesByUsername(userName);
-        for (RolePermissionEntity rp : rolePermissionEntityList){
+        for (RolePermissionEntity rp : rolePermissionEntityList) {
             res.add(findPermissionById(rp.getPid()).getUrl());
         }
-        for (String s : res){
-            System.out.println(s);
-        }
+//        for (String s : res){
+//            System.out.println(s);
+//        }
 
         return res;
     }
 
     @Override
-    public Set<String> listPermissionMethods(String userName,String URL) {
+    public Set<String> listPermissionMethods(String userName, String URL) {
         HashSet<String> res = new HashSet<>();
 
         List<RolePermissionEntity> rolePermissionEntityList = rolePermissionService.findRoleEntitiesByUsername(userName);
 
-        for (RolePermissionEntity rp : rolePermissionEntityList){
+        for (RolePermissionEntity rp : rolePermissionEntityList) {
             PermissionEntity p = findPermissionById(rp.getPid());
-            if (URL.equals(p.getUrl())){
+            if (URL.equals(p.getUrl())) {
                 res.add(p.getMethod());
             }
 
         }
-        for (String s : res){
-            System.out.println(s);
-        }
+//        for (String s : res){
+//            System.out.println(s);
+//        }
 
         return res;
     }

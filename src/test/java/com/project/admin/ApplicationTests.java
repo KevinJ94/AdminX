@@ -29,7 +29,7 @@ class ApplicationTests {
     @Test
     void testUserCRUD() {
 
-        Set<MenuEntity> menuEntitySet = menuService.listMenus("zhang3");
+        Set<MenuEntity> menuEntitySet = menuService.listMenus("li4");
         List<TreeData> treeDataList = Algorithm.constructMenuTree(menuEntitySet);
         for (TreeData node : treeDataList){
             Algorithm.printTreeData(node,1);
