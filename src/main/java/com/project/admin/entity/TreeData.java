@@ -11,7 +11,6 @@ public class TreeData {
         this.icon = icon;
         this.title = title;
         this.index = index;
-        this.children = children;
     }
 
     public String getIcon() {

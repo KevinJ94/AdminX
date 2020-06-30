@@ -28,6 +28,12 @@ public class MenuController extends BaseController {
         return Algorithm.constructMenuTree(menuService.listMenus(name));
     }
 
+    @ApiOperation("通过用户名获取路由列表")
+    @RequestMapping(value = "/getrouter/{name}",method = RequestMethod.GET)
+    public List<MenuEntity> listRouterByName(@PathVariable("name") String name) {
+        return menuService.ListRouters(name);
+    }
+
     @ApiOperation("通过id获取菜单")
     @RequestMapping(value = "/menu/{id}",method = RequestMethod.GET)
     public ResultBean getMenu(@PathVariable("id") int id) {

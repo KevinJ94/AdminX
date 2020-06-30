@@ -17,9 +17,10 @@ public class UserController extends BaseController {
 
     @ApiOperation("获取用户列表")
     @RequestMapping(value = "/user",method = RequestMethod.GET)
-    public List<UserEntity> listUser() {
+    public ResultBean listUser() {
+        List<UserEntity> userEntityList = userService.findAll();
 
-        return userService.findAll();
+        return ResultBeanFactory.getResultBean(response.getStatus(),"success",userEntityList,true);
     }
 
     @ApiOperation("通过id获取用户")

@@ -15,8 +15,7 @@ public class Algorithm {
 
         int times = 2;
         String algorithmName = "md5";
-        String encodedPassword = new SimpleHash(algorithmName, password, salt, times).toString();
-        return encodedPassword;
+        return new SimpleHash(algorithmName, password, salt, times).toString();
     }
 
     public static String generateSalt(){

@@ -78,4 +78,16 @@ public class MenuServiceImpl implements MenuService {
 
         return menuEntitySet;
     }
+
+    @Override
+    public List<MenuEntity> ListRouters(String userName) {
+        Set<MenuEntity> menuEntitySet = listMenus(userName);
+        List<MenuEntity> menuEntityList = new ArrayList<>();
+        for (MenuEntity menuEntity : menuEntitySet){
+            if (menuEntity.getPath() != null && !menuEntity.getPath().equals("")){
+                menuEntityList.add(menuEntity);
+            }
+        }
+        return menuEntityList;
+    }
 }

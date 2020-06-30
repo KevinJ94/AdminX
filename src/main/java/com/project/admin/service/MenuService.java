@@ -19,4 +19,6 @@ public interface MenuService {
 
     public Set<MenuEntity> listMenus(String userName);
 
+    public List<MenuEntity> ListRouters(String userName);
+
 }
