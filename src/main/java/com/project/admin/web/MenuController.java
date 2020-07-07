@@ -18,20 +18,22 @@ public class MenuController extends BaseController {
 
     @ApiOperation("获取菜单列表")
     @RequestMapping(value = "/menu",method = RequestMethod.GET)
-    public List<TreeData> listMenu() {
-        return Algorithm.constructMenuTree(menuService.findAll());
+    public ResultBean listMenu() {
+
+        return ResultBeanFactory.getResultBean(response.getStatus(),"success",menuService.findAll(),true);
     }
 
     @ApiOperation("通过用户名获取菜单列表")
     @RequestMapping(value = "/getmenu/{name}",method = RequestMethod.GET)
-    public List<TreeData> listMenuByName(@PathVariable("name") String name) {
-        return Algorithm.constructMenuTree(menuService.listMenus(name));
+    public ResultBean listMenuByName(@PathVariable("name") String name) {
+        return ResultBeanFactory.getResultBean(response.getStatus(),"success",Algorithm.constructMenuTree(menuService.listMenus(name)),true);
     }
 
     @ApiOperation("通过用户名获取路由列表")
     @RequestMapping(value = "/getrouter/{name}",method = RequestMethod.GET)
-    public List<MenuEntity> listRouterByName(@PathVariable("name") String name) {
-        return menuService.ListRouters(name);
+    public ResultBean listRouterByName(@PathVariable("name") String name) {
+
+        return ResultBeanFactory.getResultBean(response.getStatus(),"success", menuService.ListRouters(name),true);
     }
 
     @ApiOperation("通过id获取菜单")

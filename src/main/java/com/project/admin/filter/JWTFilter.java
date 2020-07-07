@@ -9,6 +9,8 @@ import com.project.admin.utils.SpringContextUtils;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -76,11 +78,11 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             try {
                 executeLogin(request, response);
             } catch (Exception e) {
-                error(response,"登陆失败",e);
+                error(response,HttpStatus.UNAUTHORIZED.value(),"登陆失败",e);
                 return false;
             }
         } else {
-            error(response,"需要token",null);
+            error(response,HttpStatus.UNAUTHORIZED.value(),"需要token",null);
             return false;
         }
         if (null == permissionService)
@@ -122,7 +124,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             if (hasPermission)
                 return super.preHandle(request, response);
             else {
-                error(response,"没有当前url权限",new UnauthorizedException());
+                error(response, HttpStatus.UNAUTHORIZED.value(),"没有当前url权限",new UnauthorizedException());
 
                 return false;
             }
@@ -173,11 +175,11 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     }
 
 
-    private void error(ServletResponse response,String msg, Exception e) throws IOException {
+    private void error(ServletResponse response,int httpStatus,String msg, Exception e) throws IOException {
         HttpServletResponse resp = (HttpServletResponse) response;
         resp.setContentType("application/json; charset=utf-8");
         PrintWriter out = resp.getWriter();
-        out.println(JSON.toJSONString(ResultBeanFactory.getResultBean(((HttpServletResponse) response).getStatus(), msg, e, false)));
+        out.println(JSON.toJSONString(ResultBeanFactory.getResultBean(httpStatus, msg, e, false)));
         out.flush();
         out.close();
     }

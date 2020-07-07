@@ -1,9 +1,11 @@
 package com.project.admin;
 
 import com.project.admin.entity.MenuEntity;
+import com.project.admin.entity.RoleEntity;
 import com.project.admin.entity.TreeData;
 import com.project.admin.service.MenuService;
 import com.project.admin.service.PermissionService;
+import com.project.admin.service.RoleService;
 import com.project.admin.utils.Algorithm;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,7 @@ class ApplicationTests {
     PermissionService permissionService;
 
     @Autowired
-    MenuService menuService;
+    RoleService roleService;
 
 
     @Test
@@ -28,11 +30,13 @@ class ApplicationTests {
 
     @Test
     void testUserCRUD() {
-
-        Set<MenuEntity> menuEntitySet = menuService.listMenus("li4");
-        List<TreeData> treeDataList = Algorithm.constructMenuTree(menuEntitySet);
+        List<TreeData> treeDataList = Algorithm.constructRoleTree(roleService.findAll());
         for (TreeData node : treeDataList){
             Algorithm.printTreeData(node,1);
+        }
+
+        for(RoleEntity roleEntity:roleService.listRoleByUser("zhang3")){
+            System.out.println(roleEntity.getName()+"   "+roleEntity.getDesc());
         }
     }
 

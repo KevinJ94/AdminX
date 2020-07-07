@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
 
         UserEntity u = userDAO.saveAndFlush(user);
         UserRoleEntity userRoleEntity = new UserRoleEntity();
-        userRoleEntity.setRid(3);
+        userRoleEntity.setRid(2);
         userRoleEntity.setUid(u.getId());
         userRoleService.addUserRole(userRoleEntity);
 

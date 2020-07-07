@@ -16,8 +16,10 @@ public class MenuEntity {
     private String path;
     private String desc;
     private Integer pid;
+    private String component;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     public int getId() {
         return id;
@@ -103,5 +105,15 @@ public class MenuEntity {
 
     public void setPid(Integer pid) {
         this.pid = pid;
+    }
+
+    @Basic
+    @Column(name = "component")
+    public String getComponent() {
+        return component;
+    }
+
+    public void setComponent(String component) {
+        this.component = component;
     }
 }

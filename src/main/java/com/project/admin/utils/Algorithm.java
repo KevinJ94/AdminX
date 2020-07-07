@@ -1,6 +1,7 @@
 package com.project.admin.utils;
 
 import com.project.admin.entity.MenuEntity;
+import com.project.admin.entity.RoleEntity;
 import com.project.admin.entity.TreeData;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.SimpleHash;
@@ -33,22 +34,50 @@ public class Algorithm {
         }
 
         for (TreeData tree : treeDataList){
-            findChildren(menuEntities,tree);
+            findMenuChildren(menuEntities,tree);
         }
 
         return treeDataList;
     }
 
-    private static void findChildren(Set<MenuEntity> menuEntityHashSet,TreeData treeData){
+    private static void findMenuChildren(Set<MenuEntity> menuEntityHashSet,TreeData treeData){
         for (MenuEntity menu : menuEntityHashSet){
             if (treeData.getId().equals(menu.getPid())){
                 TreeData t = new TreeData(menu.getId(),menu.getPid(),menu.getIcon(),menu.getTitle(),menu.getIndex());
                 treeData.children.add(t);
-                findChildren(menuEntityHashSet,t);
+                findMenuChildren(menuEntityHashSet,t);
             }
 
         }
     }
+
+    public static List<TreeData> constructRoleTree(List<RoleEntity> roleEntityList){
+
+        List<TreeData> treeDataList = new ArrayList<>();
+        for (RoleEntity role: roleEntityList){
+            if (role.getPid()==null){
+                treeDataList.add(new TreeData(role.getId(),role.getPid(),role.getName(),role.getDesc()));
+            }
+        }
+
+        for (TreeData tree : treeDataList){
+            findRoleChildren(roleEntityList,tree);
+        }
+
+        return treeDataList;
+    }
+
+    private static void findRoleChildren(List<RoleEntity> roleEntityList, TreeData treeData){
+        for (RoleEntity role : roleEntityList){
+            if (treeData.getId().equals(role.getPid())){
+                TreeData t = new TreeData(role.getId(),role.getPid(),role.getName(),role.getDesc());
+                treeData.children.add(t);
+                findRoleChildren(roleEntityList,t);
+            }
+
+        }
+    }
+
 
     public static void printTreeData(TreeData treeData,int num){
         System.out.println(treeData.title);

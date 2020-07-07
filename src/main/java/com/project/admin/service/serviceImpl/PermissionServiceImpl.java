@@ -83,6 +83,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public Set<String> listPermissionMethods(String userName, String URL) {
+
         HashSet<String> res = new HashSet<>();
 
         List<RolePermissionEntity> rolePermissionEntityList = rolePermissionService.findRoleEntitiesByUsername(userName);

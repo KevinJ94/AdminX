@@ -2,6 +2,7 @@ package com.project.admin.service.serviceImpl;
 
 import com.project.admin.dao.RoleDAO;
 import com.project.admin.entity.RoleEntity;
+import com.project.admin.entity.TreeData;
 import com.project.admin.entity.UserEntity;
 import com.project.admin.entity.UserRoleEntity;
 import com.project.admin.service.RoleService;
@@ -44,6 +45,13 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public List<TreeData> listAll() {
+        List<RoleEntity> roleEntityList = roleDAO.findAll();
+
+        return null;
+    }
+
+    @Override
     public RoleEntity findRoleById(int id) {
         return roleDAO.findById(id).get();
     }
@@ -60,6 +68,24 @@ public class RoleServiceImpl implements RoleService {
         //List<UserRoleEntity> userRoleEntityList = userRoleService.findUserRoleEntitiesByUid(user.getId());
         for (RoleEntity role : findRolesByUid(user.getId())){
             res.add(role.getName());
+        }
+        return res;
+    }
+
+    @Override
+    public List<RoleEntity> listRoleByUser(String userName) {
+        List<RoleEntity> res = new ArrayList<>();
+        UserEntity user = userService.findByName(userName);
+
+        if (user== null){
+            return res;
+        }
+
+        //List<UserRoleEntity> userRoleEntityList = userRoleService.findUserRoleEntitiesByUid(user.getId());
+        for (RoleEntity role : findRolesByUid(user.getId())){
+            if (!res.contains(role)){
+                res.add(role);
+            }
         }
         return res;
     }

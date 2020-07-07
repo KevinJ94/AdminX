@@ -13,6 +13,13 @@ public class TreeData {
         this.index = index;
     }
 
+    public TreeData(Integer id, Integer pid, String name, String desc) {
+        this.id = id;
+        this.pid = pid;
+        this.title = name;
+        this.desc_ = desc;
+    }
+
     public String getIcon() {
         return icon;
     }
@@ -66,5 +73,7 @@ public class TreeData {
     public String icon;
     public String title;
     public String index;
+    public String desc_;
+
     public List<TreeData> children = new ArrayList<>();
 }

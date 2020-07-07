@@ -32,8 +32,11 @@ public class UserController extends BaseController {
 
     @ApiOperation("添加用户")
     @RequestMapping(value = "/user",method = RequestMethod.POST)
-    public ResultBean addUser(@RequestBody UserEntity userEntity) {
+    public ResultBean addUser(UserEntity userEntity) {
         try {
+            if(userService.findByName(userEntity.getName()) != null){
+                return ResultBeanFactory.getResultBean(response.getStatus(),"用户名重复",null,false);
+            }
             String salt = Algorithm.generateSalt();
             String encodedPassword = Algorithm.encodePassword(userEntity.getPassword(),salt);
             UserEntity u = new UserEntity();
@@ -47,10 +50,10 @@ public class UserController extends BaseController {
             return ResultBeanFactory.getResultBean(response.getStatus(),e.getMessage(),null,false);
         }
     }
+
     @ApiOperation("修改用户")
     @RequestMapping(value = "/user",method = RequestMethod.PUT)
-    public ResultBean editUser(@RequestBody UserEntity userEntity) {
-
+    public ResultBean editUser(UserEntity userEntity) {
 
         try {
             String salt = new SecureRandomNumberGenerator().nextBytes().toString();
@@ -68,6 +71,7 @@ public class UserController extends BaseController {
             return ResultBeanFactory.getResultBean(response.getStatus(),e.getMessage(),null,false);
         }
     }
+
     @ApiOperation("禁用用户")
     @RequestMapping(value = "/user/{id}",method = RequestMethod.DELETE)
     public ResultBean deleteUser(@PathVariable("id") int id) {

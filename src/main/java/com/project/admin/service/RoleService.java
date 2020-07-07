@@ -1,6 +1,7 @@
 package com.project.admin.service;
 
 import com.project.admin.entity.RoleEntity;
+import com.project.admin.entity.TreeData;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,9 +18,13 @@ public interface RoleService {
 
     public List<RoleEntity> findAll();
 
+    public List<TreeData> listAll();
+
     public RoleEntity findRoleById(int id);
 
     public Set<String> listRoleNames(String userName);
+
+    public List<RoleEntity> listRoleByUser(String userName);
 
     public Set<RoleEntity> findRolesByUid(int id);
 
