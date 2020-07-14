@@ -62,10 +62,14 @@ public class JWTRealm extends AuthorizingRealm {
         if (username == null) {
             throw new AuthenticationException("token invalid");
         }
-        System.out.println(username);
+        //System.out.println(username);
         UserEntity userEntity = userService.findByName(username);
         if (userEntity == null) {
             throw new AuthenticationException("User didn't existed!");
+        }
+
+        if(userEntity.getEnable() ==0){
+            throw new AuthenticationException("User is enable!");
         }
 
         if (! JWTUtil.verify(token, username, userEntity.getPassword())) {

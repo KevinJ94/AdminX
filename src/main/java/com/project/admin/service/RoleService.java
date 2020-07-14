@@ -1,7 +1,8 @@
 package com.project.admin.service;
 
 import com.project.admin.entity.RoleEntity;
-import com.project.admin.entity.TreeData;
+import com.project.admin.model.AllocRole;
+import com.project.admin.model.TreeData;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +29,9 @@ public interface RoleService {
 
     public Set<RoleEntity> findRolesByUid(int id);
 
-    RoleEntity findByName(String name);
+    public RoleEntity findByName(String name);
 
+    public int findLevel(RoleEntity roleEntity);
+
+    public void allocRoles(AllocRole allocRole);
 }

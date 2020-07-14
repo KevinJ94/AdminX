@@ -1,4 +1,4 @@
-package com.project.admin.vmodel;
+package com.project.admin.model;
 
 public class PermissionModel {
     private String name;

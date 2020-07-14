@@ -13,6 +13,7 @@ public class RoleEntity {
     private String name;
     private String desc;
     private Integer pid;
+    private int level;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,5 +69,15 @@ public class RoleEntity {
 
     public void setPid(Integer pid) {
         this.pid = pid;
+    }
+
+    @Basic
+    @Column(name = "level")
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 }

@@ -1,6 +1,11 @@
 package com.project.admin.service.serviceImpl;
 
 import com.project.admin.dao.PermissionDAO;
+import com.project.admin.dao.RolePermissionDAO;
+import com.project.admin.entity.RoleEntity;
+import com.project.admin.entity.UserRoleEntity;
+import com.project.admin.model.AllocPermission;
+import com.project.admin.model.PageData;
 import com.project.admin.entity.PermissionEntity;
 import com.project.admin.entity.RolePermissionEntity;
 import com.project.admin.service.PermissionService;
@@ -8,9 +13,13 @@ import com.project.admin.service.RolePermissionService;
 import com.project.admin.service.RoleService;
 import com.project.admin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +38,9 @@ public class PermissionServiceImpl implements PermissionService {
     @Autowired
     RolePermissionService rolePermissionService;
 
+    @Autowired
+    RolePermissionDAO rolePermissionDAO;
+
     @Override
     public void addPermission(PermissionEntity permissionEntity) {
         permissionDAO.save(permissionEntity);
@@ -45,8 +57,22 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
+    public PageData findAll(int page, int size) {
+        PageRequest pr = PageRequest.of(page,size);
+
+        Page<PermissionEntity> pages = permissionDAO.findAll(pr);
+
+        List<PermissionEntity> permissionEntityList = new ArrayList<>();
+        for (PermissionEntity permissionEntity : pages){
+            permissionEntityList.add(permissionEntity);
+        }
+
+        return new PageData(size,(int) pages.getTotalElements(),page,permissionEntityList);
+    }
+
+    @Override
     public List<PermissionEntity> findAll() {
-        return permissionDAO.findAll();
+        return (List<PermissionEntity>) permissionDAO.findAll();
     }
 
     @Override
@@ -103,21 +129,39 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
+    public Set<PermissionEntity> findPermissionsByRid(Integer roleId) {
+
+        List<RolePermissionEntity> rolePermissionEntityList = rolePermissionService.findRolePermissionByRid(roleId);
+        Set<PermissionEntity> permissionEntitySet = new HashSet<>();
+        for(RolePermissionEntity rolePermissionEntity : rolePermissionEntityList){
+            permissionEntitySet.add(findPermissionById(rolePermissionEntity.getPid()));
+        }
+
+        return permissionEntitySet;
+    }
+
+    @Override
     public PermissionEntity findByName(String name) {
 
         return permissionDAO.findByName(name);
     }
 
-    @Deprecated
-    @Override
-    public boolean needInterceptor(String requestURI) {
 
-        List<PermissionEntity> ps = findAll();
-        for (PermissionEntity p : ps) {
-            if (p.getUrl().equals(requestURI))
-                return true;
+    @Transactional
+    @Override
+    public void allocPermissions(AllocPermission allocPermission) {
+        List<RolePermissionEntity> pids = new ArrayList<>();
+
+        for (Integer i : allocPermission.getPids()){
+            RolePermissionEntity t = new RolePermissionEntity();
+            t.setRid(allocPermission.getRid());
+            t.setPid(i);
+            pids.add(t);
         }
-        return false;
+
+        rolePermissionDAO.deleteAllByRid(allocPermission.getRid());
+        rolePermissionDAO.saveAll(pids);
     }
+
 
 }

@@ -43,6 +43,10 @@ public class RoleMenuEntity {
         return rid;
     }
 
+    public void setRid(int rid) {
+        this.rid = rid;
+    }
+
     public void setRid(Integer rid) {
         this.rid = rid;
     }
@@ -51,6 +55,10 @@ public class RoleMenuEntity {
     @Column(name = "mid")
     public Integer getMid() {
         return mid;
+    }
+
+    public void setMid(int mid) {
+        this.mid = mid;
     }
 
     public void setMid(Integer mid) {

@@ -2,12 +2,12 @@ package com.project.admin.utils;
 
 import com.project.admin.entity.MenuEntity;
 import com.project.admin.entity.RoleEntity;
-import com.project.admin.entity.TreeData;
+import com.project.admin.model.TreeData;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.SimpleHash;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -36,6 +36,13 @@ public class Algorithm {
         for (TreeData tree : treeDataList){
             findMenuChildren(menuEntities,tree);
         }
+
+        treeDataList.sort(new Comparator<TreeData>() {
+            @Override
+            public int compare(TreeData o1, TreeData o2) {
+                return Integer.parseInt(o1.index) - Integer.parseInt(o2.index);
+            }
+        });
 
         return treeDataList;
     }

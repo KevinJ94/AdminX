@@ -1,5 +1,8 @@
 package com.project.admin.service;
 
+import com.project.admin.model.AllocPermission;
+import com.project.admin.model.AllocRole;
+import com.project.admin.model.PageData;
 import com.project.admin.entity.PermissionEntity;
 
 import java.util.List;
@@ -12,6 +15,8 @@ public interface PermissionService {
 
     public void deletePermissionById(int id);
 
+    public PageData findAll(int page, int size);
+
     public List<PermissionEntity> findAll();
 
     public PermissionEntity findPermissionById(int id);
@@ -22,8 +27,10 @@ public interface PermissionService {
 
     public Set<String> listPermissionMethods(String userName,String URL);
 
+    public Set<PermissionEntity> findPermissionsByRid(Integer roleId);
+
     PermissionEntity findByName(String name);
 
-    @Deprecated
-    public boolean needInterceptor(String requestURI);
+    public void allocPermissions(AllocPermission allocPermission);
+
 }

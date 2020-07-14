@@ -1,8 +1,6 @@
 package com.project.admin.web;
 
-import com.project.admin.entity.MenuEntity;
 import com.project.admin.entity.RoleEntity;
-import com.project.admin.entity.TreeData;
 import com.project.admin.utils.Algorithm;
 import com.project.admin.utils.ResultBean;
 import com.project.admin.utils.ResultBeanFactory;
@@ -42,7 +40,8 @@ public class RoleController extends BaseController {
     @RequestMapping(value = "/role",method = RequestMethod.POST)
     public ResultBean addRole(RoleEntity roleEntity) {
         try {
-
+            int level = roleService.findLevel(roleEntity);
+            roleEntity.setLevel(level);
             roleService.addRole(roleEntity);
             return ResultBeanFactory.getResultBean(response.getStatus(),"success",null,true);
         }catch (Exception e){
@@ -54,8 +53,10 @@ public class RoleController extends BaseController {
     public ResultBean editRole(RoleEntity roleEntity) {
 
         try {
-
-            roleService.addRole(roleEntity);
+            RoleEntity r = roleService.findRoleById(roleEntity.getId());
+            r.setDesc(roleEntity.getDesc());
+            r.setName(roleEntity.getName());
+            roleService.updateRole(r);
             return ResultBeanFactory.getResultBean(response.getStatus(),"success",null,true);
         }catch (Exception e){
             return ResultBeanFactory.getResultBean(response.getStatus(),e.getMessage(),null,false);

@@ -109,11 +109,11 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
                 // 这就表示当前用户有这个权限
 
                 if (matchURL(url, requestURI)) {
-                    System.out.println("url 匹配成功");
+                    //System.out.println("url 匹配成功");
                     for (String method : permissionMethods) {
 
                         if (((HttpServletRequest) request).getMethod().equals(method)) {
-                            System.out.println("Method 匹配成功");
+                            //System.out.println("Method 匹配成功");
                             hasPermission = true;
                             break;
                         }

@@ -30,6 +30,10 @@ public class UserRoleEntity {
         return uid;
     }
 
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
+
     public void setUid(Integer uid) {
         this.uid = uid;
     }
@@ -38,6 +42,10 @@ public class UserRoleEntity {
     @Column(name = "rid")
     public Integer getRid() {
         return rid;
+    }
+
+    public void setRid(int rid) {
+        this.rid = rid;
     }
 
     public void setRid(Integer rid) {

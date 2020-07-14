@@ -1,18 +1,16 @@
 package com.project.admin;
 
 import com.project.admin.entity.MenuEntity;
-import com.project.admin.entity.RoleEntity;
-import com.project.admin.entity.TreeData;
+import com.project.admin.model.AllocPermission;
 import com.project.admin.service.MenuService;
 import com.project.admin.service.PermissionService;
-import com.project.admin.service.RoleService;
-import com.project.admin.utils.Algorithm;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.security.AllPermission;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @SpringBootTest
 class ApplicationTests {
@@ -21,7 +19,7 @@ class ApplicationTests {
     PermissionService permissionService;
 
     @Autowired
-    RoleService roleService;
+    MenuService menuService;
 
 
     @Test
@@ -30,14 +28,16 @@ class ApplicationTests {
 
     @Test
     void testUserCRUD() {
-        List<TreeData> treeDataList = Algorithm.constructRoleTree(roleService.findAll());
-        for (TreeData node : treeDataList){
-            Algorithm.printTreeData(node,1);
-        }
-
-        for(RoleEntity roleEntity:roleService.listRoleByUser("zhang3")){
-            System.out.println(roleEntity.getName()+"   "+roleEntity.getDesc());
-        }
+        AllocPermission allocPermission = new AllocPermission();
+        List<Integer> pids = new ArrayList<>();
+        allocPermission.setRid(3);
+        pids.add(1);
+        pids.add(2);
+        pids.add(3);
+        pids.add(4);
+        allocPermission.setPids(pids);
+        permissionService.allocPermissions(allocPermission);
+        //permissionService.findPermissionById(1);
     }
 
 

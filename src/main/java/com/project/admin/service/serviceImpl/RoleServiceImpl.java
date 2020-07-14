@@ -1,8 +1,10 @@
 package com.project.admin.service.serviceImpl;
 
 import com.project.admin.dao.RoleDAO;
+import com.project.admin.dao.UserRoleDAO;
 import com.project.admin.entity.RoleEntity;
-import com.project.admin.entity.TreeData;
+import com.project.admin.model.AllocRole;
+import com.project.admin.model.TreeData;
 import com.project.admin.entity.UserEntity;
 import com.project.admin.entity.UserRoleEntity;
 import com.project.admin.service.RoleService;
@@ -10,6 +12,7 @@ import com.project.admin.service.UserRoleService;
 import com.project.admin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -23,6 +26,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserRoleDAO userRoleDAO;
 
     @Override
     public void addRole(RoleEntity roleEntity) {
@@ -112,9 +118,41 @@ public class RoleServiceImpl implements RoleService {
         }
     }
 
+
     @Override
     public RoleEntity findByName(String name) {
 
         return roleDAO.findByName(name);
     }
+
+    @Override
+    public int findLevel(RoleEntity roleEntity) {
+        if (roleEntity.getPid() == null){
+            return 0;
+        }
+        RoleEntity p = findRoleById(roleEntity.getPid());
+        return p.getLevel()+1;
+    }
+
+    @Transactional
+    @Override
+    public void allocRoles(AllocRole allocRole) {
+        //int topLevel = findTopLevel(allocRole);
+        List<UserRoleEntity> rids = new ArrayList<>();
+        for (Integer i : allocRole.getRids()){
+           //RoleEntity r = findRoleById(i);
+           UserRoleEntity t = new UserRoleEntity();
+           t.setRid(i);
+           t.setUid(allocRole.getUid());
+           rids.add(t);
+        }
+
+        userRoleDAO.deleteAllByUid(allocRole.getUid());
+        userRoleDAO.saveAll(rids);
+
+
+    }
+
+
+
 }

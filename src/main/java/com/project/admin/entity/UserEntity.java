@@ -78,6 +78,10 @@ public class UserEntity {
         return enable;
     }
 
+    public void setEnable(int enable) {
+        this.enable = enable;
+    }
+
     public void setEnable(Integer enable) {
         this.enable = enable;
     }

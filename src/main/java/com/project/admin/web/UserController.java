@@ -1,15 +1,13 @@
 package com.project.admin.web;
 
+import com.project.admin.model.PageData;
 import com.project.admin.entity.UserEntity;
 import com.project.admin.utils.Algorithm;
 import com.project.admin.utils.ResultBean;
 import com.project.admin.utils.ResultBeanFactory;
 import io.swagger.annotations.ApiOperation;
-import org.apache.shiro.crypto.SecureRandomNumberGenerator;
-import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 public class UserController extends BaseController {
@@ -17,10 +15,11 @@ public class UserController extends BaseController {
 
     @ApiOperation("获取用户列表")
     @RequestMapping(value = "/user",method = RequestMethod.GET)
-    public ResultBean listUser() {
-        List<UserEntity> userEntityList = userService.findAll();
+    public ResultBean listUser(PageData pageData) {
+        //System.out.println(pageData.getSize()+" "+pageData.getPageNum());
+        PageData pd = userService.findAll(pageData.pageNum,pageData.size);
 
-        return ResultBeanFactory.getResultBean(response.getStatus(),"success",userEntityList,true);
+        return ResultBeanFactory.getResultBean(response.getStatus(),"success",pd,true);
     }
 
     @ApiOperation("通过id获取用户")
@@ -56,15 +55,9 @@ public class UserController extends BaseController {
     public ResultBean editUser(UserEntity userEntity) {
 
         try {
-            String salt = new SecureRandomNumberGenerator().nextBytes().toString();
-            int times = 2;
-            String algorithmName = "md5";
-            String encodedPassword = new SimpleHash(algorithmName, userEntity.getPassword(), salt, times).toString();
-            UserEntity u = new UserEntity();
-            u.setName(userEntity.getName());
-            u.setPassword(encodedPassword);
-            u.setSalt(salt);
+            UserEntity u = userService.findUserById(userEntity.getId());
             u.setEnable(userEntity.getEnable());
+            System.out.println(userEntity.getEnable());
             userService.updateUser(u);
             return ResultBeanFactory.getResultBean(response.getStatus(),"success",null,true);
         }catch (Exception e){

@@ -1,16 +1,16 @@
 package com.project.admin.service.serviceImpl;
 
 import com.project.admin.dao.MenuDAO;
-import com.project.admin.entity.MenuEntity;
-import com.project.admin.entity.RoleEntity;
-import com.project.admin.entity.RoleMenuEntity;
-import com.project.admin.entity.UserEntity;
+import com.project.admin.dao.RoleMenuDAO;
+import com.project.admin.entity.*;
+import com.project.admin.model.AllocMenu;
 import com.project.admin.service.MenuService;
 import com.project.admin.service.RoleMenuService;
 import com.project.admin.service.RoleService;
 import com.project.admin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,6 +23,9 @@ public class MenuServiceImpl implements MenuService {
     MenuDAO menuDAO;
 
     @Autowired
+    RoleMenuDAO roleMenuDAO;
+
+    @Autowired
     RoleService roleService;
 
     @Autowired
@@ -30,7 +33,6 @@ public class MenuServiceImpl implements MenuService {
 
     @Autowired
     RoleMenuService roleMenuService;
-
 
 
     @Override
@@ -80,6 +82,16 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
+    public Set<MenuEntity> listMenusByRoleId(Integer rid) {
+        List<RoleMenuEntity> roleMenuEntityList = roleMenuService.findRoleMenusByRid(rid);
+        Set<MenuEntity> menuEntitySet = new HashSet<>();
+        for (RoleMenuEntity rm : roleMenuEntityList){
+            menuEntitySet.add(findMenuById(rm.getMid()));
+        }
+        return menuEntitySet;
+    }
+
+    @Override
     public List<MenuEntity> ListRouters(String userName) {
         Set<MenuEntity> menuEntitySet = listMenus(userName);
         List<MenuEntity> menuEntityList = new ArrayList<>();
@@ -89,5 +101,21 @@ public class MenuServiceImpl implements MenuService {
             }
         }
         return menuEntityList;
+    }
+
+    @Transactional
+    @Override
+    public void allocMenus(AllocMenu allocMenu) {
+        List<RoleMenuEntity> mids = new ArrayList<>();
+        for (Integer i : allocMenu.getMids()){
+            RoleMenuEntity t = new RoleMenuEntity();
+            t.setRid(allocMenu.getRid());
+            t.setMid(i);
+            mids.add(t);
+        }
+
+
+        roleMenuDAO.deleteAllByRid(allocMenu.getRid());
+        roleMenuDAO.saveAll(mids);
     }
 }

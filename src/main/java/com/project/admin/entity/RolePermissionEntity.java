@@ -30,6 +30,10 @@ public class RolePermissionEntity {
         return rid;
     }
 
+    public void setRid(int rid) {
+        this.rid = rid;
+    }
+
     public void setRid(Integer rid) {
         this.rid = rid;
     }
@@ -38,6 +42,10 @@ public class RolePermissionEntity {
     @Column(name = "pid")
     public Integer getPid() {
         return pid;
+    }
+
+    public void setPid(int pid) {
+        this.pid = pid;
     }
 
     public void setPid(Integer pid) {

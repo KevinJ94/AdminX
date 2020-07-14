@@ -1,4 +1,4 @@
-package com.project.admin.entity;
+package com.project.admin.model;
 
 import java.util.ArrayList;
 import java.util.List;

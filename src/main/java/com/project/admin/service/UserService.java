@@ -1,5 +1,6 @@
 package com.project.admin.service;
 
+import com.project.admin.model.PageData;
 import com.project.admin.entity.UserEntity;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ public interface UserService {
 
     public void deleteUserById(int id);
 
-    public List<UserEntity> findAll();
+    public PageData findAll(int page, int size);
 
     public UserEntity findUserById(int id);
 

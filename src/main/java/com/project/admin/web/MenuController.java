@@ -1,17 +1,11 @@
 package com.project.admin.web;
 
 import com.project.admin.entity.MenuEntity;
-import com.project.admin.entity.PermissionEntity;
-import com.project.admin.entity.TreeData;
 import com.project.admin.utils.Algorithm;
 import com.project.admin.utils.ResultBean;
 import com.project.admin.utils.ResultBeanFactory;
-import com.project.admin.vmodel.PermissionModel;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Set;
 
 @RestController
 public class MenuController extends BaseController {
@@ -20,7 +14,7 @@ public class MenuController extends BaseController {
     @RequestMapping(value = "/menu",method = RequestMethod.GET)
     public ResultBean listMenu() {
 
-        return ResultBeanFactory.getResultBean(response.getStatus(),"success",menuService.findAll(),true);
+        return ResultBeanFactory.getResultBean(response.getStatus(),"success",Algorithm.constructMenuTree(menuService.findAll()),true);
     }
 
     @ApiOperation("通过用户名获取菜单列表")
@@ -49,7 +43,7 @@ public class MenuController extends BaseController {
 
     @ApiOperation("添加菜单")
     @RequestMapping(value = "/menu",method = RequestMethod.POST)
-    public ResultBean addMenu(@RequestBody MenuEntity menuEntity) {
+    public ResultBean addMenu(MenuEntity menuEntity) {
         try {
 
             menuService.addMenu(menuEntity);
@@ -60,11 +54,17 @@ public class MenuController extends BaseController {
     }
     @ApiOperation("修改菜单")
     @RequestMapping(value = "/menu",method = RequestMethod.PUT)
-    public ResultBean editMenu(@RequestBody MenuEntity menuEntity) {
+    public ResultBean editMenu(MenuEntity menuEntity) {
 
         try {
 
-            menuService.addMenu(menuEntity);
+            MenuEntity m = menuService.findMenuById(menuEntity.getId());
+            m.setDesc(menuEntity.getDesc());
+            m.setIcon(menuEntity.getIcon());
+            m.setIndex(menuEntity.getIndex());
+            m.setPath(menuEntity.getPath());
+            m.setTitle(menuEntity.getTitle());
+            menuService.updateMenu(m);
             return ResultBeanFactory.getResultBean(response.getStatus(),"success",null,true);
         }catch (Exception e){
             return ResultBeanFactory.getResultBean(response.getStatus(),e.getMessage(),null,false);

@@ -1,25 +1,21 @@
 package com.project.admin.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "menu", schema = "adminx", catalog = "")
-@JsonIgnoreProperties({ "handler","hibernateLazyInitializer" })
 public class MenuEntity {
     private int id;
+    private Integer pid;
     private String title;
     private String index;
     private String icon;
     private String path;
     private String desc;
-    private Integer pid;
     private String component;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     public int getId() {
         return id;
@@ -27,6 +23,16 @@ public class MenuEntity {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Basic
+    @Column(name = "pid")
+    public Integer getPid() {
+        return pid;
+    }
+
+    public void setPid(Integer pid) {
+        this.pid = pid;
     }
 
     @Basic
@@ -40,7 +46,7 @@ public class MenuEntity {
     }
 
     @Basic
-    @Column(name = "index")
+    @Column(name = "index_")
     public String getIndex() {
         return index;
     }
@@ -79,34 +85,6 @@ public class MenuEntity {
         this.desc = desc;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MenuEntity that = (MenuEntity) o;
-        return id == that.id &&
-                Objects.equals(title, that.title) &&
-                Objects.equals(index, that.index) &&
-                Objects.equals(icon, that.icon) &&
-                Objects.equals(path, that.path) &&
-                Objects.equals(desc, that.desc);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, index, icon, path, desc);
-    }
-
-    @Basic
-    @Column(name = "pid")
-    public Integer getPid() {
-        return pid;
-    }
-
-    public void setPid(Integer pid) {
-        this.pid = pid;
-    }
-
     @Basic
     @Column(name = "component")
     public String getComponent() {
@@ -115,5 +93,25 @@ public class MenuEntity {
 
     public void setComponent(String component) {
         this.component = component;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuEntity that = (MenuEntity) o;
+        return id == that.id &&
+                Objects.equals(pid, that.pid) &&
+                Objects.equals(title, that.title) &&
+                Objects.equals(index, that.index) &&
+                Objects.equals(icon, that.icon) &&
+                Objects.equals(path, that.path) &&
+                Objects.equals(desc, that.desc) &&
+                Objects.equals(component, that.component);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, pid, title, index, icon, path, desc, component);
     }
 }

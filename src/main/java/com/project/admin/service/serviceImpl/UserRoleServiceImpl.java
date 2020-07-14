@@ -18,6 +18,8 @@ public class UserRoleServiceImpl implements UserRoleService {
         userRoleDAO.save(userRoleEntity);
     }
 
+
+
     @Override
     public void updateUserRole(UserRoleEntity userRoleEntity) {
         userRoleDAO.save(userRoleEntity);
